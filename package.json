@@ -1,0 +1,31 @@
+{
+  "name": "abordage",
+  "version": "0.0.0",
+  "description": "Model builder for sailsjs and backbone",
+  "main": "index.js",
+  "scripts": {
+    "test": "mocha -R spec test/*.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Tarabyte/abordage.git"
+  },
+  "keywords": [
+    "meta",
+    "model",
+    "sailsjs",
+    "backbone"
+  ],
+  "author": "tarabyte",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/Tarabyte/abordage/issues"
+  },
+  "homepage": "https://github.com/Tarabyte/abordage",
+  "devDependencies": {
+    "gulp": "^3.8.5",
+    "gulp-jshint": "^1.6.3",
+    "gulp-mocha": "^0.4.1",
+    "mocha": "^1.20.1"
+  }
+}
