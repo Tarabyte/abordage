@@ -1,2 +1,2 @@
 /*global require*/
-require('./src/abordage');
+module.exports = require('./src/abordage');
