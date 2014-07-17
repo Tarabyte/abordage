@@ -19,6 +19,7 @@ function Configurator(name) {
     }
     
     this.$attrs = {};
+    this.$proto = {};
 }
 
 /**
@@ -85,6 +86,20 @@ types.forEach(function(type) {
 });
 
 /**
+ * Add methods to model prototype.
+ */
+configuratorProto.proto = function(config) {
+    var proto = this.$proto;
+    if(config) {
+        Object.keys(config).forEach(function(key) {
+            proto[key] = config[key];
+        });
+    }
+
+    return this;
+};
+
+/**
  * Finalize current attr configuration and start next.
  * @param {string} name - new attribute name.
  */
@@ -105,6 +120,14 @@ attrConfiguratorProto.ofType = function(type) {
     }
     
     this.$type = type;
+    return this;
+};
+
+/**
+ * Set default value for attribute.
+ */
+attrConfiguratorProto.defaultsTo = function(value) {
+    this.$default = value;
     return this;
 };
 
@@ -141,5 +164,15 @@ validators.forEach(function(validator) {
         return this.validator(validator, options);
     };
 });
+
+//Adding model generators.
+function callModel(name) {
+    return function() {
+        return this.$model[name].apply(this.$model, arguments);
+    };
+}
+
+configuratorProto.sails = require('./sails.js');
+attrConfiguratorProto.sails = callModel('sails');
 
 module.exports = Configurator;

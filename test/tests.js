@@ -105,6 +105,18 @@ describe('abondage', function () {
                     t.equal(called, 1);
                 });
                 
+                describe('defaultsTo', function() {
+                    it('should allow to set default value', function() {
+                        var attr = model.attr(makeName());
+
+                        t.equal(typeof attr.defaultsTo, 'function');
+
+                        t.ok(attr.defaultsTo(true), attr);
+
+                        t.equal(attr.$default, true);
+                    });
+                });
+
                 describe('validators', function() {
                     var attr = model.attr(makeName());
                     
@@ -173,6 +185,72 @@ describe('abondage', function () {
             });
         });
         
+        describe('prototype methods', function() {
+           var model = abordage(makeName());
+
+            it('should allow to add methods', function() {
+                t.equal(typeof model.proto, 'function');
+            });
+
+            it('should return this', function() {
+                t.ok(model.proto() === model);
+            });
+
+            it('should add methods to proto', function() {
+                model.proto({a: 1});
+
+                t.equal(model.$proto.a, 1);
+
+                model.proto({b: 2, c: 3});
+
+                t.equal(model.$proto.a, 1);
+                t.equal(model.$proto.b, 2);
+                t.equal(model.$proto.c, 3);
+            });
+
+        });
+
     });
     
+});
+
+describe('sails', function() {
+    var model = abordage('user');
+
+    it('should have sails method', function() {
+        t.equal(typeof model.sails, 'function');
+    });
+
+    it('should return model configuration', function() {
+        var user = model.sails();
+        t.equal(typeof user, 'object');
+
+        user = model.string('name').integer('age').string('password').sails();
+
+        t.deepEqual(user, {
+            name: 'string',
+            age: 'integer',
+            password: 'string'
+        });
+    });
+
+    it('should add defaults', function() {
+        var model = abordage('user').boolean('flag').defaultsTo(false);
+
+        t.deepEqual(model.sails(), {
+            flag: {
+                type: 'boolean',
+                defaultsTo: false
+            }
+        });
+    });
+
+    it('should add prototype methods', function() {
+        var model = abordage('user').proto({a: 1}).boolean('flag');
+
+        t.deepEqual(model.sails(), {
+            a: 1,
+            flag: 'boolean'
+        });
+    });
 });
