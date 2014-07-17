@@ -104,8 +104,75 @@ describe('abondage', function () {
                     console.warn = warn;
                     t.equal(called, 1);
                 });
+                
+                describe('validators', function() {
+                    var attr = model.attr(makeName());
+                    
+                    it('should allow to add validator', function(){
+                        t.equal(typeof attr.validator, 'function');
+                    });
+                    
+                    it('should throw w/o name', function() {
+                        t.throws(function() {
+                            attr.validator();    
+                        });
+                    });
+                    
+                    it('should return attr back', function() {
+                        t.ok(attr.validator('required') === attr);
+                    });
+                    
+                    it('should actually add validator', function() {
+                        t.equal(attr.$validators.length, 1);
+                    });
+                    
+                    it('should allow to set options', function() {
+                        attr.validator('length', {max: 10, min: 6});
+                        var length = attr.$validators[attr.$validators.length - 1];
+                        
+                        t.equal(length.min, 6);
+                        t.equal(length.max, 10);
+                        
+                    });
+                    
+                    var validatorTypes = ["isEmpty", "isRequired", "isProtected", "isNotEmpty", "isUndefined", "isObject", "isJson", "isMediumtext", "isText", "isString", "isAlpha", "isAlphadashed", "isNumeric", "isAlphanumeric", "isAlphanumericdashed", "isEmail", "isUrl", "isUrlish", "isIp", "isIpv4", "isIpv6", "isCreditcard", "isUuid", "isUuidv3", "isUuidv4", "isInt", "isInteger", "isNumber", "isFinite", "isDecimal", "isFloat", "isFalsey", "isTruthy", "isNull", "isNotNull", "isBoolean", "isArray", "isBinary", "isDate", "isDatetime", "isHexadecimal", "isHexColor", "isLowercase", "isUppercase", "isAfter", "isBefore", "isEquals", "isContains", "isNotContains", "isLen", "isIn", "isNotIn", "isMax", "isMin", "isGreaterThan", "isLessThan", "isMinLength", "isMaxLength", "isRegex", "isNotRegex"];
+                    
+                    validatorTypes.forEach(function(type) {
+                        it('should be defined', function() {
+                            t.equal(typeof attr[type], 'function');    
+                        });    
+                        
+                    });
+                });
             });
-        });        
+        });
+        
+        describe('methods for types', function() {
+            var model = abordage(makeName());
+            
+            var types = 'string|text|integer|float|date|time|datetime|boolean|binary|array|json'.split('|');
+            
+            types.forEach(function(type) {
+                it('should be defined', function() {
+                    t.equal(typeof model[type], 'function');
+                });
+                
+                var attr = model[type](makeName());
+                
+                it('should return new attr', function() {
+                    t.ok(attr);
+                });                
+            });
+            
+            var attr = model.string(makeName());
+            
+            types.forEach(function(type) {
+                it('should be defined for attr', function() {
+                    t.equal(typeof attr[type], 'function');
+                });
+            });
+        });
+        
     });
     
 });
